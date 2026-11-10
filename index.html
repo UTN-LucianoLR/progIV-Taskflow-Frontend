@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+      color: #333;
+      background-color: #fafafa;
+    }
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #eaecef;
+      padding-bottom: 10px;
+    }
+    section {
+      background: #fff;
+      border: 1px solid #e1e4e8;
+      border-radius: 6px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    input, select, button {
+      padding: 9px 12px;
+      margin: 6px 0;
+      border: 1px solid #d1d5da;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    input[type="text"], input[type="password"], select {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #2ea44f;
+      color: white;
+      border: 1px solid rgba(27,31,35,.15);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #2c974b;
+    }
+    button:disabled {
+      background-color: #94d3a2;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background-color: #e1e4e8;
+      color: #24292e;
+    }
+    .btn-secondary:hover {
+      background-color: #d1d5da;
+    }
+    #tasks {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    #tasks li {
+      padding: 10px 14px;
+      margin: 8px 0;
+      background: #f6f8fa;
+      border-left: 4px solid #0366d6;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #tasks li.completada {
+      border-left-color: #28a745;
+      color: #6a737d;
+      text-decoration: line-through;
+    }
+    .error {
+      color: #cb2431;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .meta-tag {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: #eaecef;
+      color: #586069;
+      margin-left: 8px;
+    }
+    .status-badge {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .pagination-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .config-box {
+      font-size: 12px;
+      color: #586069;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>TaskFlow</h1>
+
+  <!-- Sección de Login (E4-02 / E4-03) -->
+  <section id="login-box">
+    <h2>Ingresar</h2>
+    <div class="config-box">
+      <label for="api-url"><strong>Backend API:</strong></label>
+      <input id="api-url" type="text" value="https://taskflow-api-progiv.onrender.com/api" placeholder="URL de la API">
+      <small>Podés usar la URL de producción en Render o <code>http://127.0.0.1:8000/api</code> para local.</small>
+    </div>
+    <label for="username">Usuario:</label>
+    <input id="username" placeholder="Ingresá tu usuario">
+    <label for="password">Contraseña:</label>
+    <input id="password" type="password" placeholder="Ingresá tu contraseña">
+    <button onclick="login()">Ingresar</button>
+    <p id="login-error" class="error"></p>
+  </section>
+
+  <!-- Sección Principal de la Aplicación (E4-02 / E4-04 / E4-05) -->
+  <section id="app-box" style="display:none;">
+    <div class="header-row">
+      <h2>Mis tareas</h2>
+      <div>
+        <span id="user-info" class="meta-tag"></span>
+        <button class="btn-secondary" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <div>
+      <label for="project"><strong>Proyecto:</strong></label>
+      <select id="project" onchange="onProjectSelected()"></select>
+      <span id="ws-indicator" class="meta-tag">WebSocket: desconectado</span>
+    </div>
+
+    <ul id="tasks"></ul>
+
+    <!-- Paginación (E4-08 / Parte 5) -->
+    <div class="pagination-bar">
+      <button id="prev-btn" class="btn-secondary" onclick="prevPage()" disabled>&larr; Anterior</button>
+      <span id="page-info" style="font-size: 13px; color: #586069;"></span>
+      <button id="next-btn" class="btn-secondary" onclick="nextPage()" disabled>Siguiente &rarr;</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eaecef; margin: 24px 0;">
+
+    <!-- Creación de Tareas (E4-05) -->
+    <h3>Crear nueva tarea</h3>
+    <input id="new-title" placeholder="Título de la tarea">
+    <button onclick="createTask()">Agregar Tarea</button>
+    <p id="app-error" class="error"></p>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
